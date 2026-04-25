@@ -1,0 +1,123 @@
+[
+  {
+    "id": "d1",
+    "incident": "Users experienced failures when attempting to download crates from crates.io, resulting in broken package retrieval.",
+    "logs": "[12:34:56] ERROR: Failed to generate download URL for crate 'serde' version '1.0.0'\n[12:35:01] WARN: Download request for crate 'tokio' returned 404\n[12:35:05] ERROR: URL generation service returned invalid path\n[12:35:10] INFO: Retrying download for crate 'rand' after URL error",
+    "metrics": "Error rate for crate downloads spiked from 0.1% to 85%, average download latency increased by 300ms",
+    "deployments": "Deployment of URL generation service update at 12:30 UTC",
+    "is_deploy_cause": true,
+    "expected_root_cause": "crates.io download breakage from deployment bug in URL generation",
+    "source": "https://blog.rust-lang.org/inside-rust/2023/07/21/crates-io-postmortem.html",
+    "category": "deploy"
+  },
+  {
+    "id": "d2",
+    "incident": "Users experienced failures resolving DNS queries impacting crates.io availability during infrastructure changes.",
+    "logs": "[12:03:15] ERROR: DNS resolution timeout for crates.io\n[12:03:17] WARN: Retrying DNS query for crates.io\n[12:03:20] ERROR: DNS resolution failed after 3 attempts\n[12:03:25] INFO: Fallback to cached DNS entries unsuccessful",
+    "metrics": "DNS resolution error rate spiked from 0% to 85%, request latency increased from 50ms to 1200ms, availability dropped from 99.9% to 75%",
+    "deployments": "Deployment of updated crates.io infrastructure components",
+    "is_deploy_cause": true,
+    "expected_root_cause": "DNS resolution failure during crates.io infrastructure deployment",
+    "source": "https://blog.rust-lang.org/inside-rust/2023/02/08/dns-outage-portmortem.html",
+    "category": "deploy"
+  },
+  {
+    "id": "d3",
+    "incident": "Service disruption due to DNS resolution failures impacting container orchestration.",
+    "logs": "[12:03:15] ERROR: DNS lookup failed for container orchestration service\n[12:03:17] WARN: Retrying DNS resolution\n[12:04:02] ERROR: Container orchestration unable to connect to DNS server\n[12:05:30] INFO: DNS resolution restored, services recovering",
+    "metrics": "Increased DNS error rate from 0.1% to 15%, container orchestration request latency increased by 200ms, service error rate spiked to 10%",
+    "deployments": "Config deployment to container orchestration system",
+    "is_deploy_cause": true,
+    "expected_root_cause": "PagerDuty container orchestration DNS failure from config deployment",
+    "source": "https://status.pagerduty.com/incidents/vbp7ht2647l8",
+    "category": "deploy"
+  },
+  {
+    "id": "d4",
+    "incident": "API and Dashboard outage lasting nearly 2 hours caused all requests to fail with errors.",
+    "logs": "[14:05:12] ERROR: primary database node unreachable\n[14:06:00] WARN: failed to promote replica node to primary\n[14:30:45] ERROR: API request failed due to database connection error\n[15:50:00] INFO: primary database node restored and cluster stable",
+    "metrics": "error rate spiked to 100% during outage; API latency increased sharply before failure; database node CPU and I/O dropped to zero on primary node failure",
+    "deployments": "Deployment of payment processing service v2.3.1 completed 3 days prior to incident",
+    "is_deploy_cause": true,
+    "expected_root_cause": "GoCardless API/Dashboard outage from bad config combined with failures",
+    "source": "https://gocardless.com/blog/incident-review-api-and-dashboard-outage-on-10th-october/",
+    "category": "deploy"
+  },
+  {
+    "id": "d5",
+    "incident": "Users experienced failures when executing 'git push heroku main', resulting in deployment errors and inability to update applications.",
+    "logs": "[14:32:10] ERROR: Deployment failed due to invalid git reference\n[14:32:12] WARN: Retrying push operation\n[14:32:15] ERROR: Deployment aborted - incorrect deployment process detected\n[14:32:20] INFO: Rollback initiated for failed deployment",
+    "metrics": "Deployment success rate dropped from 98% to 45%, error rate for git push commands increased by 60%, average deployment latency increased by 30 seconds",
+    "deployments": "Recent deployment process change affecting git push workflow",
+    "is_deploy_cause": true,
+    "expected_root_cause": "Heroku git push broken by incorrect deployment process",
+    "source": "https://blog.heroku.com/how-i-broke-git-push-heroku-main",
+    "category": "deploy"
+  },
+  {
+    "id": "r1",
+    "incident": "All Stack Exchange sites experienced an outage lasting approximately 6 minutes due to connectivity issues between load balancers and web servers.",
+    "logs": "[19:26:15] ERROR: Connection to IIS web server timed out\n[19:27:00] WARN: HAProxy unable to complete connection, retrying\n[19:27:30] INFO: Reverting recent firewall configuration change\n[19:32:00] INFO: Connection restored, traffic flowing normally",
+    "metrics": "Increased connection timeouts to IIS web servers; spike in failed TCP handshakes; overall site availability dropped to 0%",
+    "deployments": "Change to iptables firewall configuration pushed to Git at 19:01",
+    "is_deploy_cause": false,
+    "expected_root_cause": "Incorrect firewall configuration on HAProxy load balancers blocked response traffic, causing the outage.",
+    "source": "https://web.archive.org/web/20201020103424/https://stackstatus.net/post/96025967369/outage-post-mortem-august-25th-2014",
+    "category": "config"
+  },
+  {
+    "id": "r2",
+    "incident": "A global outage occurred causing complete disconnection between data centers and loss of service connectivity.",
+    "logs": "[10:15:23] ERROR: Backbone network connections lost\n[10:15:25] WARN: Audit tool failed to block critical command\n[10:16:00] ERROR: DNS servers disabling BGP advertisements due to loss of data center connectivity\n[10:17:10] CRITICAL: All backbone routers offline, traffic halted",
+    "metrics": "Backbone network connectivity dropped from 100% to 0%, DNS query success rate fell to 0%, user request latency spiked to timeout levels",
+    "deployments": "Deployed new user interface updates to mobile app on October 3",
+    "is_deploy_cause": false,
+    "expected_root_cause": "Backbone router configuration changes caused a complete disconnection of Facebook data centers globally.",
+    "source": "https://engineering.fb.com/2021/10/05/networking-traffic/outage-details/",
+    "category": "config"
+  },
+  {
+    "id": "r3",
+    "incident": "Infrastructure connectivity issues caused multiple systems to experience degraded performance and intermittent failures.",
+    "logs": "[09:15:23] ERROR: Connection timeout to service discovery endpoint\n[09:16:01] WARN: Retrying service discovery request\n[09:17:45] ERROR: Failed to propagate service discovery configuration\n[09:18:30] INFO: Partial recovery of connectivity to dependent systems",
+    "metrics": "Increased error rates from 0.1% to 15%, latency spikes from 100ms to 1200ms, CPU usage stable around 70%",
+    "deployments": "Deployment of version 2.14.7 of the metrics collector service completed 3 hours prior to incident",
+    "is_deploy_cause": false,
+    "expected_root_cause": "Datadog outage from bad service discovery config propagation",
+    "source": "https://www.datadoghq.com/blog/2020-09-25-infrastructure-connectivity-issue/",
+    "category": "config"
+  },
+  {
+    "id": "r4",
+    "incident": "Allegro e-commerce platform experienced an outage due to unexpected system behavior under high load conditions.",
+    "logs": "[12:34:56] ERROR: Service response timeout exceeded threshold\n[12:35:01] WARN: Configuration resource limits approaching maximum capacity\n[12:35:05] ERROR: Request queue length exceeded safe limits\n[12:35:10] INFO: Traffic spike detected, scaling attempts initiated",
+    "metrics": "Error rate increased from 0.1% to 15%, average response latency rose from 200ms to 2s, CPU utilization spiked to 95%",
+    "deployments": "Recent deployment of version 3.2.1 with minor UI updates completed 3 days prior",
+    "is_deploy_cause": false,
+    "expected_root_cause": "Allegro e-commerce outage from traffic spike hitting config resource limits",
+    "source": "https://allegro.tech/2018/08/postmortem-why-allegro-went-down.html",
+    "category": "external"
+  },
+  {
+    "id": "r5",
+    "incident": "Cloudflare experienced DNS resolution failures affecting 1.1.1.1 and related services from 07:00 to 11:00 UTC on October 4, 2023.",
+    "logs": "[07:01:15] ERROR: Failed to parse DNS root zone record ZONEMD\n[07:05:42] WARN: Serving stale root zone data due to parse failure\n[08:30:10] ERROR: DNS query returned SERVFAIL for valid requests\n[10:59:59] INFO: Root zone parsing issue resolved, normal service resuming",
+    "metrics": "DNS SERVFAIL error rate spiked from 0% to 15% during incident; query latency increased by 20%; successful resolution rate dropped by 30%",
+    "deployments": "No recent deployment noted",
+    "is_deploy_cause": false,
+    "expected_root_cause": "Cloudflare DNS resolution failures were caused by an internal software error parsing the new ZONEMD record in the root zone, not a recent deployment.",
+    "source": "https://blog.cloudflare.com/1-1-1-1-lookup-failures-on-october-4th-2023/",
+    "category": "ambiguous"
+  },
+  {
+    "id": "r6",
+    "incident": "A network outage caused partial service disruption across multiple Cloudflare data centers lasting 27 minutes.",
+    "logs": "[21:12] ERROR: Backbone traffic routing anomaly detected on Atlanta router\n[21:15] WARN: Traffic volume on Atlanta router exceeded capacity\n[21:30] INFO: Atlanta router disabled to restore normal traffic flow\n[21:39] INFO: Traffic routing normalized after router disablement",
+    "metrics": "Traffic dropped by approximately 50% across affected network segments; increased congestion observed between Atlanta and Washington, DC; some log data dropped due to core data center congestion",
+    "deployments": "No recent deployment noted",
+    "is_deploy_cause": false,
+    "expected_root_cause": "Cloudflare outage from network config typo during maintenance, not standard deployment",
+    "source": "https://web.archive.org/web/20211016040522/https://blog.cloudflare.com/cloudflare-outage-on-july-17-2020/",
+    "category": "ambiguous"
+  }
+]
