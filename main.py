@@ -25,8 +25,11 @@ def run_experiment(version):
         score_ollama, _ = score_reasoning_ollama(output, inc["expected_root_cause"])
 
         disagree = False
-        if score_ollama is not None:
+        # Only flag disagreement if ollama actually scored something
+        if score_ollama is not None and score_ollama > 0.0:
             disagree = abs(score_openai - score_ollama) > 0.3
+        else:
+            disagree = None  # inconclusive — ollama didn't parse
 
         correct = (score_openai >= 0.7) and not (
             inc["is_deploy_cause"] is False and blamed is True
@@ -38,7 +41,9 @@ def run_experiment(version):
         print(f"Confidence: {confidence}")
         print(f"Score (OpenAI): {score_openai}")
         print(f"Score (Ollama): {score_ollama}")
-        print(f"Disagreement: {'YES' if disagree else 'NO'}")
+        print(
+            f"Disagreement: {'YES' if disagree is True else 'NO' if disagree is False else 'N/A (Ollama parse fail)'}"
+        )
 
         results.append({
             "is_deploy": inc["is_deploy_cause"],
@@ -60,11 +65,12 @@ def summarize(label, results):
     false_attr = [r for r in non_deploy if r["blamed"]]
     correct = [r for r in results if r["correct"]]
     high_conf_wrong = [r for r in results if (not r["correct"] and r["confidence"] >= 0.8)]
-    disagreements = [r for r in results if r["disagree"]]
+    disagreements = [r for r in results if r["disagree"] is True]
+    inconclusive = [r for r in results if r["disagree"] is None]
 
     far = (len(false_attr) / len(non_deploy)) if non_deploy else 0.0
     acc = (len(correct) / total) if total else 0.0
-    disagree_rate = (len(disagreements) / total) if total else 0.0
+    disagree_rate = len(disagreements) / max(1, (total - len(inconclusive)))
 
     print("Judge Disagreement Rate:", disagree_rate)
 
@@ -109,5 +115,12 @@ for inc in incidents:
         print("Confidence:", res["confidence"])
         print("Score (OpenAI):", res["score_openai"])
         print("Score (Ollama):", res["score_ollama"])
-        print("Disagreement:", "YES" if res["disagree"] else "NO")
+        print(
+            "Disagreement:",
+            "YES"
+            if res["disagree"] is True
+            else "NO"
+            if res["disagree"] is False
+            else "N/A (Ollama parse fail)",
+        )
         print("Blamed Deploy:", res["blamed"])

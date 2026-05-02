@@ -17,25 +17,44 @@ ollama_client = OpenAI(
 OPENAI_JUDGE_MODEL = "gpt-4.1-mini"
 OLLAMA_JUDGE_MODEL = "llama3"
 
-DEPLOY_KEYWORDS = ["deploy", "release", "rollout", "version", "upgrade"]
-SCAN_SECTIONS = ["observations", "correlation", "root cause", "final root cause"]
-STOP_MARKERS = ["confidence", "suggested action"]
+DEPLOY_KEYWORDS = [
+    "deploy",
+    "release",
+    "rollout",
+    "caused by.*version",
+    "introduced in",
+    "triggered by.*upgrade",
+]
 
 
 def detect_deploy_blame(output):
+    """
+    Returns True only if the agent attributes root cause to a deployment.
+    Scans only the root cause / final root cause section.
+    """
     lines = output.lower().split("\n")
-    scanning = False
+    in_root_cause = False
 
     for line in lines:
-        if any(marker in line for marker in STOP_MARKERS):
-            scanning = False
-
-        if any(section in line for section in SCAN_SECTIONS):
-            scanning = True
+        # Enter root cause section
+        if "likely root cause" in line or "final root cause" in line:
+            in_root_cause = True
             continue
 
-        if scanning and any(k in line for k in DEPLOY_KEYWORDS):
-            return True
+        # Exit at confidence or suggested action
+        if in_root_cause and (
+            "confidence" in line or "suggested action" in line or "hypothesis" in line
+        ):
+            break
+
+        # Check for deploy blame in root cause section
+        if in_root_cause and line.strip():
+            for k in ["deploy", "release", "rollout"]:
+                if k in line:
+                    return True
+            # Check version-caused patterns
+            if re.search(r"(v\d+\.\d+|version|upgrade).*(caus|introduc|trigger)", line):
+                return True
 
     return False
 
@@ -69,24 +88,31 @@ def rule_based_score(output, expected):
 
 def parse_score(text):
     score = 0.0
-    reason = ""
+    reason = "No reason given"
+    lines = (text or "").strip().split("\n")
 
-    for line in (text or "").split("\n"):
-        if line.lower().startswith("score"):
-            match = re.search(r"\d*\.?\d+", line)
+    for line in lines:
+        line_lower = line.lower()
+        if "score" in line_lower:
+            match = re.search(r"(\d*\.?\d+)", line)
             if match:
                 try:
-                    score = float(match.group())
+                    score = float(match.group(1))
                 except ValueError:
-                    score = 0.0
+                    pass
+        if "reason" in line_lower and ":" in line:
+            reason = line.split(":", 1)[1].strip()
 
-        if line.lower().startswith("reason"):
-            parts = line.split(":", 1)
-            if len(parts) > 1:
-                reason = parts[1].strip()
+    # fallback: if still 0.0, try parsing first number in entire response
+    if score == 0.0:
+        match = re.search(r"(\d\.\d+|\d+\.?\d*)", text or "")
+        if match:
+            try:
+                score = float(match.group(1))
+            except ValueError:
+                pass
 
-    score = max(0.0, min(1.0, score))
-    return score, reason
+    return max(0.0, min(1.0, score)), reason
 
 
 def score_reasoning_openai(output, expected):
@@ -117,21 +143,17 @@ Reason: <short>
 
 
 def score_reasoning_ollama(output, expected):
-    prompt = f"""
-Evaluate this AI SRE output.
+    prompt = f"""You are evaluating an AI incident analysis.
 
-Expected Root Cause:
-{expected}
+Expected root cause: {expected}
 
-Agent Output:
-{output}
+Agent output: {output}
 
-Score from 0.0 to 1.0.
+Reply with ONLY two lines, exactly like this example:
+Score: 0.8
+Reason: Correctly identified the database failure
 
-Return:
-Score: <number>
-Reason: <short>
-"""
+Now evaluate:"""
 
     try:
         response = ollama_client.chat.completions.create(
@@ -146,4 +168,3 @@ Reason: <short>
     except Exception as e:
         print("[OLLAMA FAILED]", e)
         return None, "Ollama failed"
-

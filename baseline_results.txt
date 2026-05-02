@@ -1,0 +1,761 @@
+
+===== NAIVE PROMPT =====
+
+[JUDGE: OLLAMA]
+
+--- d1 ---
+Blamed Deploy: True
+Correct: True
+Confidence: 0.9
+Score (OpenAI): 1.0
+Score (Ollama): 0.9
+Disagreement: NO
+[JUDGE: OLLAMA]
+
+--- d2 ---
+Blamed Deploy: True
+Correct: True
+Confidence: 0.9
+Score (OpenAI): 0.8
+Score (Ollama): 0.9
+Disagreement: NO
+[JUDGE: OLLAMA]
+
+--- d3 ---
+Blamed Deploy: True
+Correct: True
+Confidence: 0.9
+Score (OpenAI): 0.95
+Score (Ollama): 1.0
+Disagreement: NO
+[JUDGE: OLLAMA]
+
+--- d4 ---
+Blamed Deploy: True
+Correct: True
+Confidence: 0.9
+Score (OpenAI): 0.95
+Score (Ollama): 0.9
+Disagreement: NO
+[JUDGE: OLLAMA]
+
+--- d5 ---
+Blamed Deploy: True
+Correct: True
+Confidence: 0.9
+Score (OpenAI): 0.95
+Score (Ollama): 0.9
+Disagreement: NO
+[JUDGE: OLLAMA]
+
+--- r1 ---
+Blamed Deploy: False
+Correct: True
+Confidence: 0.9
+Score (OpenAI): 0.95
+Score (Ollama): 1.0
+Disagreement: NO
+[JUDGE: OLLAMA]
+
+--- r2 ---
+Blamed Deploy: False
+Correct: True
+Confidence: 0.9
+Score (OpenAI): 0.95
+Score (Ollama): 0.9
+Disagreement: NO
+[JUDGE: OLLAMA]
+
+--- r3 ---
+Blamed Deploy: True
+Correct: False
+Confidence: 0.7
+Score (OpenAI): 0.4
+Score (Ollama): 0.7
+Disagreement: NO
+[JUDGE: OLLAMA]
+
+--- r4 ---
+Blamed Deploy: False
+Correct: True
+Confidence: 0.95
+Score (OpenAI): 0.98
+Score (Ollama): 0.95
+Disagreement: NO
+[JUDGE: OLLAMA]
+
+--- r5 ---
+Blamed Deploy: True
+Correct: False
+Confidence: 0.85
+Score (OpenAI): 0.4
+Score (Ollama): 0.85
+Disagreement: YES
+[JUDGE: OLLAMA]
+
+--- a1 ---
+Blamed Deploy: True
+Correct: False
+Confidence: 0.9
+Score (OpenAI): 0.7
+Score (Ollama): 0.9
+Disagreement: NO
+[JUDGE: OLLAMA]
+
+--- a2 ---
+Blamed Deploy: True
+Correct: False
+Confidence: 0.9
+Score (OpenAI): 0.7
+Score (Ollama): 0.9
+Disagreement: NO
+[JUDGE: OLLAMA]
+
+--- a3 ---
+Blamed Deploy: False
+Correct: True
+Confidence: 0.9
+Score (OpenAI): 0.85
+Score (Ollama): 1.0
+Disagreement: NO
+[JUDGE: OLLAMA]
+
+--- a4 ---
+Blamed Deploy: True
+Correct: False
+Confidence: 0.9
+Score (OpenAI): 0.9
+Score (Ollama): 0.9
+Disagreement: NO
+[JUDGE: OLLAMA]
+
+--- d6 ---
+Blamed Deploy: True
+Correct: True
+Confidence: 0.9
+Score (OpenAI): 0.8
+Score (Ollama): 0.9
+Disagreement: NO
+[JUDGE: OLLAMA]
+
+--- d7 ---
+Blamed Deploy: True
+Correct: True
+Confidence: 0.9
+Score (OpenAI): 0.7
+Score (Ollama): 0.9
+Disagreement: NO
+[JUDGE: OLLAMA]
+
+--- d8 ---
+Blamed Deploy: True
+Correct: True
+Confidence: 0.9
+Score (OpenAI): 0.9
+Score (Ollama): 0.9
+Disagreement: NO
+[JUDGE: OLLAMA]
+
+--- r6 ---
+Blamed Deploy: True
+Correct: False
+Confidence: 0.95
+Score (OpenAI): 0.95
+Score (Ollama): 0.95
+Disagreement: NO
+[JUDGE: OLLAMA]
+
+--- r7 ---
+Blamed Deploy: True
+Correct: False
+Confidence: 0.85
+Score (OpenAI): 0.6
+Score (Ollama): 0.85
+Disagreement: NO
+[JUDGE: OLLAMA]
+
+--- r8 ---
+Blamed Deploy: True
+Correct: False
+Confidence: 0.85
+Score (OpenAI): 0.3
+Score (Ollama): 0.85
+Disagreement: YES
+[JUDGE: OLLAMA]
+
+--- a5 ---
+Blamed Deploy: True
+Correct: False
+Confidence: 0.9
+Score (OpenAI): 0.85
+Score (Ollama): 0.9
+Disagreement: NO
+[JUDGE: OLLAMA]
+
+--- a6 ---
+Blamed Deploy: True
+Correct: False
+Confidence: 0.9
+Score (OpenAI): 0.85
+Score (Ollama): 0.9
+Disagreement: NO
+[JUDGE: OLLAMA]
+
+--- a7 ---
+Blamed Deploy: True
+Correct: False
+Confidence: 0.95
+Score (OpenAI): 0.95
+Score (Ollama): 0.95
+Disagreement: NO
+[JUDGE: OLLAMA]
+
+--- a8 ---
+Blamed Deploy: True
+Correct: False
+Confidence: 0.9
+Score (OpenAI): 0.95
+Score (Ollama): 0.9
+Disagreement: NO
+
+===== GROUNDED PROMPT =====
+
+[JUDGE: OLLAMA]
+
+--- d1 ---
+Blamed Deploy: True
+Correct: True
+Confidence: 0.9
+Score (OpenAI): 1.0
+Score (Ollama): 1.0
+Disagreement: NO
+[JUDGE: OLLAMA]
+
+--- d2 ---
+Blamed Deploy: True
+Correct: True
+Confidence: 0.85
+Score (OpenAI): 0.95
+Score (Ollama): 0.85
+Disagreement: NO
+[JUDGE: OLLAMA]
+
+--- d3 ---
+Blamed Deploy: True
+Correct: True
+Confidence: 0.85
+Score (OpenAI): 0.9
+Score (Ollama): 0.85
+Disagreement: NO
+[JUDGE: OLLAMA]
+
+--- d4 ---
+Blamed Deploy: True
+Correct: True
+Confidence: 0.85
+Score (OpenAI): 0.9
+Score (Ollama): 0.85
+Disagreement: NO
+[JUDGE: OLLAMA]
+
+--- d5 ---
+Blamed Deploy: False
+Correct: False
+Confidence: 0.85
+Score (OpenAI): 0.6
+Score (Ollama): 0.85
+Disagreement: NO
+[JUDGE: OLLAMA]
+
+--- r1 ---
+Blamed Deploy: False
+Correct: True
+Confidence: 0.9
+Score (OpenAI): 0.95
+Score (Ollama): 1.0
+Disagreement: NO
+[JUDGE: OLLAMA]
+
+--- r2 ---
+Blamed Deploy: False
+Correct: True
+Confidence: 0.9
+Score (OpenAI): 0.95
+Score (Ollama): 0.9
+Disagreement: NO
+[JUDGE: OLLAMA]
+
+--- r3 ---
+Blamed Deploy: False
+Correct: True
+Confidence: 0.85
+Score (OpenAI): 0.95
+Score (Ollama): 0.85
+Disagreement: NO
+[JUDGE: OLLAMA]
+
+--- r4 ---
+Blamed Deploy: False
+Correct: True
+Confidence: 0.95
+Score (OpenAI): 0.95
+Score (Ollama): 0.95
+Disagreement: NO
+[JUDGE: OLLAMA]
+
+--- r5 ---
+Blamed Deploy: False
+Correct: True
+Confidence: 0.9
+Score (OpenAI): 0.95
+Score (Ollama): 1.0
+Disagreement: NO
+[JUDGE: OLLAMA]
+
+--- a1 ---
+Blamed Deploy: False
+Correct: True
+Confidence: 0.85
+Score (OpenAI): 0.95
+Score (Ollama): 0.85
+Disagreement: NO
+[JUDGE: OLLAMA]
+
+--- a2 ---
+Blamed Deploy: False
+Correct: True
+Confidence: 0.8
+Score (OpenAI): 0.9
+Score (Ollama): 0.8
+Disagreement: NO
+[JUDGE: OLLAMA]
+
+--- a3 ---
+Blamed Deploy: False
+Correct: True
+Confidence: 0.9
+Score (OpenAI): 0.9
+Score (Ollama): 1.0
+Disagreement: NO
+[JUDGE: OLLAMA]
+
+--- a4 ---
+Blamed Deploy: False
+Correct: True
+Confidence: 0.85
+Score (OpenAI): 0.9
+Score (Ollama): 0.85
+Disagreement: NO
+[JUDGE: OLLAMA]
+
+--- d6 ---
+Blamed Deploy: True
+Correct: True
+Confidence: 0.85
+Score (OpenAI): 1.0
+Score (Ollama): 0.85
+Disagreement: NO
+[JUDGE: OLLAMA]
+
+--- d7 ---
+Blamed Deploy: False
+Correct: True
+Confidence: 0.85
+Score (OpenAI): 0.7
+Score (Ollama): 0.85
+Disagreement: NO
+[JUDGE: OLLAMA]
+
+--- d8 ---
+Blamed Deploy: True
+Correct: True
+Confidence: 0.85
+Score (OpenAI): 0.9
+Score (Ollama): 0.85
+Disagreement: NO
+[JUDGE: OLLAMA]
+
+--- r6 ---
+Blamed Deploy: True
+Correct: False
+Confidence: 0.9
+Score (OpenAI): 0.95
+Score (Ollama): 1.0
+Disagreement: NO
+[JUDGE: OLLAMA]
+
+--- r7 ---
+Blamed Deploy: False
+Correct: True
+Confidence: 0.9
+Score (OpenAI): 0.8
+Score (Ollama): 0.9
+Disagreement: NO
+[JUDGE: OLLAMA]
+
+--- r8 ---
+Blamed Deploy: True
+Correct: False
+Confidence: 0.8
+Score (OpenAI): 0.3
+Score (Ollama): 0.8
+Disagreement: YES
+[JUDGE: OLLAMA]
+
+--- a5 ---
+Blamed Deploy: False
+Correct: True
+Confidence: 0.9
+Score (OpenAI): 0.85
+Score (Ollama): 0.9
+Disagreement: NO
+[JUDGE: OLLAMA]
+
+--- a6 ---
+Blamed Deploy: True
+Correct: False
+Confidence: 0.9
+Score (OpenAI): 0.95
+Score (Ollama): 0.9
+Disagreement: NO
+[JUDGE: OLLAMA]
+
+--- a7 ---
+Blamed Deploy: False
+Correct: True
+Confidence: 0.95
+Score (OpenAI): 0.95
+Score (Ollama): 0.95
+Disagreement: NO
+[JUDGE: OLLAMA]
+
+--- a8 ---
+Blamed Deploy: False
+Correct: True
+Confidence: 0.85
+Score (OpenAI): 0.9
+Score (Ollama): 0.85
+Disagreement: NO
+
+===== MULTI PROMPT =====
+
+[JUDGE: OLLAMA]
+
+--- d1 ---
+Blamed Deploy: True
+Correct: True
+Confidence: 0.9
+Score (OpenAI): 0.95
+Score (Ollama): 0.9
+Disagreement: NO
+[JUDGE: OLLAMA]
+
+--- d2 ---
+Blamed Deploy: True
+Correct: True
+Confidence: 0.85
+Score (OpenAI): 0.9
+Score (Ollama): 0.9
+Disagreement: NO
+[JUDGE: OLLAMA]
+
+--- d3 ---
+Blamed Deploy: True
+Correct: True
+Confidence: 0.9
+Score (OpenAI): 0.9
+Score (Ollama): 0.9
+Disagreement: NO
+[JUDGE: OLLAMA]
+
+--- d4 ---
+Blamed Deploy: True
+Correct: True
+Confidence: 0.85
+Score (OpenAI): 0.9
+Score (Ollama): 0.9
+Disagreement: NO
+[JUDGE: OLLAMA]
+
+--- d5 ---
+Blamed Deploy: True
+Correct: True
+Confidence: 0.85
+Score (OpenAI): 0.9
+Score (Ollama): 0.9
+Disagreement: NO
+[JUDGE: OLLAMA]
+
+--- r1 ---
+Blamed Deploy: False
+Correct: True
+Confidence: 0.8
+Score (OpenAI): 0.9
+Score (Ollama): 0.8
+Disagreement: NO
+[JUDGE: OLLAMA]
+
+--- r2 ---
+Blamed Deploy: False
+Correct: True
+Confidence: 0.85
+Score (OpenAI): 0.9
+Score (Ollama): 0.85
+Disagreement: NO
+[JUDGE: OLLAMA]
+
+--- r3 ---
+Blamed Deploy: False
+Correct: True
+Confidence: 0.85
+Score (OpenAI): 0.8
+Score (Ollama): 0.9
+Disagreement: NO
+[JUDGE: OLLAMA]
+
+--- r4 ---
+Blamed Deploy: True
+Correct: False
+Confidence: 0.85
+Score (OpenAI): 0.9
+Score (Ollama): 0.9
+Disagreement: NO
+[JUDGE: OLLAMA]
+
+--- r5 ---
+Blamed Deploy: True
+Correct: False
+Confidence: 0.85
+Score (OpenAI): 0.9
+Score (Ollama): 0.9
+Disagreement: NO
+[JUDGE: OLLAMA]
+
+--- a1 ---
+Blamed Deploy: True
+Correct: False
+Confidence: 0.85
+Score (OpenAI): 0.7
+Score (Ollama): 0.9
+Disagreement: NO
+[JUDGE: OLLAMA]
+
+--- a2 ---
+Blamed Deploy: True
+Correct: False
+Confidence: 0.85
+Score (OpenAI): 0.7
+Score (Ollama): 0.9
+Disagreement: NO
+[JUDGE: OLLAMA]
+
+--- a3 ---
+Blamed Deploy: False
+Correct: True
+Confidence: 0.85
+Score (OpenAI): 0.9
+Score (Ollama): 0.9
+Disagreement: NO
+[JUDGE: OLLAMA]
+
+--- a4 ---
+Blamed Deploy: True
+Correct: False
+Confidence: 0.85
+Score (OpenAI): 0.7
+Score (Ollama): 0.9
+Disagreement: NO
+[JUDGE: OLLAMA]
+
+--- d6 ---
+Blamed Deploy: True
+Correct: True
+Confidence: 0.9
+Score (OpenAI): 0.95
+Score (Ollama): 0.9
+Disagreement: NO
+[JUDGE: OLLAMA]
+
+--- d7 ---
+Blamed Deploy: True
+Correct: True
+Confidence: 0.85
+Score (OpenAI): 0.8
+Score (Ollama): 0.9
+Disagreement: NO
+[JUDGE: OLLAMA]
+
+--- d8 ---
+Blamed Deploy: True
+Correct: True
+Confidence: 0.85
+Score (OpenAI): 0.9
+Score (Ollama): 0.9
+Disagreement: NO
+[JUDGE: OLLAMA]
+
+--- r6 ---
+Blamed Deploy: True
+Correct: False
+Confidence: 0.9
+Score (OpenAI): 0.95
+Score (Ollama): 0.9
+Disagreement: NO
+[JUDGE: OLLAMA]
+
+--- r7 ---
+Blamed Deploy: False
+Correct: True
+Confidence: 0.85
+Score (OpenAI): 0.7
+Score (Ollama): 0.9
+Disagreement: NO
+[JUDGE: OLLAMA]
+
+--- r8 ---
+Blamed Deploy: False
+Correct: False
+Confidence: 0.85
+Score (OpenAI): 0.3
+Score (Ollama): 0.9
+Disagreement: YES
+[JUDGE: OLLAMA]
+
+--- a5 ---
+Blamed Deploy: True
+Correct: False
+Confidence: 0.85
+Score (OpenAI): 0.8
+Score (Ollama): 0.9
+Disagreement: NO
+[JUDGE: OLLAMA]
+
+--- a6 ---
+Blamed Deploy: True
+Correct: False
+Confidence: 0.85
+Score (OpenAI): 0.6
+Score (Ollama): 0.9
+Disagreement: YES
+[JUDGE: OLLAMA]
+
+--- a7 ---
+Blamed Deploy: True
+Correct: False
+Confidence: 0.9
+Score (OpenAI): 0.9
+Score (Ollama): 0.9
+Disagreement: NO
+[JUDGE: OLLAMA]
+
+--- a8 ---
+Blamed Deploy: True
+Correct: False
+Confidence: 0.85
+Score (OpenAI): 0.7
+Score (Ollama): 0.9
+Disagreement: NO
+Judge Disagreement Rate: 0.08333333333333333
+Judge Disagreement Rate: 0.041666666666666664
+Judge Disagreement Rate: 0.08333333333333333
+
+==============================================================================
+Prompt                FAR    Accuracy   HighConfWrong  DisagreeRate
+------------------------------------------------------------------------------
+Naive                0.75        0.50              11          0.08
+Grounded             0.19        0.83               4          0.04
+Multi                0.62        0.54              11          0.08
+==============================================================================
+
+Bias Reduction (Naive → Grounded): 0.56
+
+HIGH CONFIDENCE WRONG CASES:
+
+
+Case r5
+Expected: Redis cache cluster failure causing 98% cache miss rate. Deployment changed recommendation algorithm flags and is unrelated to infrastructure failure.
+Confidence: 0.85
+Score (OpenAI): 0.4
+Score (Ollama): 0.85
+Disagreement: YES
+Blamed Deploy: True
+
+Case a1
+Expected: Inventory service slowdown caused upstream timeouts in checkout; the new retry logic in v3.4.1 amplified the problem by generating a retry storm, but the root cause is inventory degradation, not the deployment itself
+Confidence: 0.9
+Score (OpenAI): 0.7
+Score (Ollama): 0.9
+Disagreement: NO
+Blamed Deploy: True
+
+Case a2
+Expected: Third-party SSO provider silently changed their token claims format; the auth middleware refactor in v2.0.0 happened to remove a legacy fallback that previously masked this, but the external change is the root cause
+Confidence: 0.9
+Score (OpenAI): 0.7
+Score (Ollama): 0.9
+Disagreement: NO
+Blamed Deploy: True
+
+Case a4
+Expected: Postmark's delivery webhooks use a different IP range than SendGrid; firewall rules were not updated to allow Postmark's webhook IPs, causing delivery confirmations to be silently dropped; emails are being delivered but success signals are lost
+Confidence: 0.9
+Score (OpenAI): 0.9
+Score (Ollama): 0.9
+Disagreement: NO
+Blamed Deploy: True
+
+Case r6
+Expected: An upstream producer service deployed a schema v4 change at 06:00 without backward compatibility; the consumer expects v3 and cannot deserialize the new messages. The thread pool change in v1.0.3 is unrelated.
+Confidence: 0.95
+Score (OpenAI): 0.95
+Score (Ollama): 0.95
+Disagreement: NO
+Blamed Deploy: True
+
+Case r7
+Expected: The staging DNS zone entry for *.staging.internal was accidentally deleted during a routine cloud infrastructure cleanup job that ran at 13:00; deployment of v0.4.1 was unrelated and completed successfully before the DNS failure
+Confidence: 0.85
+Score (OpenAI): 0.6
+Score (Ollama): 0.85
+Disagreement: NO
+Blamed Deploy: True
+
+Case r8
+Expected: A scheduled database maintenance window at 09:30 rotated read replica credentials; the reporting service still holds the old credentials and silently returns empty result sets instead of throwing an auth error, due to the DB driver's default behavior on auth failure
+Confidence: 0.85
+Score (OpenAI): 0.3
+Score (Ollama): 0.85
+Disagreement: YES
+Blamed Deploy: True
+
+Case a5
+Expected: The model serving infrastructure migration in v9.0.0 completed successfully, but the new cluster was not populated with the v3 ranking model before traffic was switched; search silently fell back to the older v2 model, degrading result quality without errors
+Confidence: 0.9
+Score (OpenAI): 0.85
+Score (Ollama): 0.9
+Disagreement: NO
+Blamed Deploy: True
+
+Case a6
+Expected: A scheduled feature flag rotation job that runs nightly at 00:00 reset all flags to their default values; the new feature flag system in v5.0.0 registers premium_billing_enabled with a default of false, whereas the old system had it hardcoded true — the nightly job exposed this default mismatch
+Confidence: 0.9
+Score (OpenAI): 0.85
+Score (Ollama): 0.9
+Disagreement: NO
+Blamed Deploy: True
+
+Case a7
+Expected: The centralized config service was seeded with a default rate limit of 10 req/min from a stale template; the actual operational limit was 100 req/min stored only in env vars. The migration in v4.4.0 switched to the config service without validating its values against the existing env var config.
+Confidence: 0.95
+Score (OpenAI): 0.95
+Score (Ollama): 0.95
+Disagreement: NO
+Blamed Deploy: True
+
+Case a8
+Expected: FCM (Firebase Cloud Messaging) rotated Android device registration tokens at 16:45 as part of a scheduled token refresh cycle; the unified notification handler in v3.9.0 omitted the token refresh logic that existed in the old Android-specific handler, causing stale tokens to be used
+Confidence: 0.9
+Score (OpenAI): 0.95
+Score (Ollama): 0.9
+Disagreement: NO
+Blamed Deploy: True
