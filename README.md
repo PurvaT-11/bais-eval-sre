@@ -1,143 +1,181 @@
 # Recency Bias in LLM SRE Agents
 
-> *LLM agents don't just blame deployments — they blame whatever changed most recently. And they do it with confidence.*
+> LLM agents don’t just blame deployments — they anchor to whatever changed most recently, and often get it wrong with high confidence.
 
 ---
 
-## The Question
+## Problem
 
-Do LLM-based SRE agents over-attribute incidents to recent events, even when those events are unrelated to the actual root cause?
+During incident analysis, LLM-based SRE agents frequently attribute failures to recent deployments.
+
+The question is:
+
+**Is this actually deployment bias, or something more general?**
 
 ---
 
-## What I Built
+## What This Project Does
 
-An end-to-end evaluation pipeline that:
+This project builds a small evaluation pipeline to test how LLM agents reason about incidents.
 
-1. **Curates 24 incidents** derived from real public postmortems — deploy-caused, red-herring, and ambiguous categories
-2. **Runs three agent strategies** against each incident: Naive, Grounded (with anti-bias constraint), and Multi-Hypothesis
-3. **Evaluates with a dual-judge setup** — OpenAI GPT-4.1-mini + local Ollama (llama3.2) — two independent model families to avoid circular self-evaluation
-4. **Measures false attribution rate, accuracy, and judge disagreement** across all strategies
+It:
+- Uses **24 incidents derived from real postmortems**
+- Runs **three prompt strategies**:
+  - Naive
+  - Grounded (anti-bias constraint)
+  - Multi-hypothesis
+- Evaluates outputs using **two independent judges**:
+  - OpenAI (same family as the agent)
+  - Local Ollama model (different architecture)
+- Measures:
+  - False Attribution Rate (FAR)
+  - Accuracy
+  - High-confidence wrong cases
+  - Judge disagreement
 
 ---
 
 ## Key Findings
 
-### Finding 1: Deployment Recency Bias Is Real and Measurable
+### 1. Deployment Bias Exists — But It's Not the Real Problem
 
-| Prompt Strategy | False Attribution Rate | Accuracy | High-Conf Wrong |
-|---|---|---|---|
-| Naive | 0.56 | 62% | 9 |
-| Grounded | 0.25 | 79% | 5 |
-| Multi-Hypothesis | 0.56 | 62% | 9 |
+| Strategy | FAR | Accuracy |
+|----------|-----|----------|
+| Naive    | 0.56 | 0.62 |
+| Grounded | 0.25 | 0.79 |
+| Multi    | 0.56 | 0.62 |
 
-A single sentence added to the prompt ("Do not assume deployment is the root cause unless logs and metrics directly support it") cuts the false attribution rate by **31 percentage points**.
-
-Multi-hypothesis reasoning did *not* reduce bias — structured deliberation gave the model more rope to rationalize the wrong answer.
-
-### Finding 2: It's Not Deploy Bias — It's Recency Bias
-
-The more interesting finding: agents don't specifically blame *deployments*. They blame **whatever changed most recently**, then describe it as a deployment.
-
-| Recent Distractor Type | Blame Rate (Naive) |
-|---|---|
-| Recent maintenance window (credential rotation) | 100% |
-| External scheduled event (FCM token rotation) | 100% |
-| Recent config migration | 100% |
-| Upstream schema change (producer deploy) | 100% |
-| Recent deployment (algorithm flags) | 100% |
-| Traffic spike (Black Friday) | 0% |
-| Recent deployment (unrelated UI change) | 0% |
-
-Events that are temporally recent and *sound operational* get blamed regardless of whether they were actually a deployment. The agent conflates "recent" with "the cause."
-
-### Finding 3: Confidence Is Not a Trust Signal
-
-High-confidence wrong answers are common across all strategies. Cases where the agent reported 0.85–0.95 confidence and was completely wrong:
-
-- **r8**: Maintenance window rotated DB credentials → agent blamed deployment at 0.85 confidence
-- **a7**: Config service seeded with stale template → agent blamed deployment at 0.95 confidence
-- **a8**: FCM token rotation cycle → agent blamed deployment at 0.9 confidence
-
-### Finding 4: Judge Disagreement Flags Silent Failures
-
-When the two independent judges (OpenAI and Ollama) disagree by >0.3 on a score, it correlates with the hardest, most ambiguous cases. Judge disagreement rate of 4–12% across strategies — low enough to be meaningful signal, not noise.
-
-Cases r7 and r8 both showed judge disagreement *and* high agent confidence *and* incorrect attribution. That combination — confident agent, disagreeing evaluators — is a detectable signal for unreliable AI outputs.
+A simple prompt constraint reduces false attribution significantly.  
+But the deeper issue remains.
 
 ---
 
-## Eval Design
+### 2. The Real Failure Mode: Recency Anchoring
 
-### Why Dual-Judge?
+The model does not specifically detect deployments.
 
-Using the same model family to evaluate its own outputs is circular. A GPT model grading GPT outputs will systematically inflate scores for outputs that match GPT's reasoning style. This eval uses:
+Instead, it:
+- looks for **what changed recently**
+- assumes that change caused the issue
+- expresses it as a deployment-related explanation
 
-- **OpenAI GPT-4.1-mini** as the baseline judge (same family as agent — included for comparison)
-- **Ollama llama3.2** as the independent judge (different architecture, runs locally, free)
+Examples of misattributed causes:
+- maintenance windows
+- config migrations
+- external token rotations
+- upstream changes
 
-Low disagreement rate (4–12%) across both judges validates that the scores are meaningful, not model-family artifacts.
+**The model is anchoring on recency, not reasoning about causality.**
 
-### Dataset Structure
+---
 
-```
-24 incidents total
-├── 8 deploy-caused (d1–d8)      — deployment was the real root cause
-├── 8 red-herring (r1–r8)        — deployment present but not the cause
-└── 8 ambiguous (a1–a8)          — deployment involved but not primary cause
-```
+### 3. Confidence Is Misleading
 
-Each incident includes: incident description, realistic log lines, key metrics, and recent deployment context. Red-herring and ambiguous cases include a plausible but unrelated recent event to test for bias.
+Wrong answers are often high confidence (0.85–0.95).
+
+Example:
+- Maintenance window rotated DB credentials  
+- Model blamed deployment  
+- Confidence: 0.85  
+
+Confidence does not reliably track correctness.
+
+---
+
+### 4. Some Failures Are Hard to Detect
+
+In several cases:
+- the agent is wrong  
+- confidence is high  
+- evaluators disagree  
+
+Example (r8):
+
+- OpenAI score: 0.4  
+- Ollama score: 0.85  
+- Agent confidence: 0.85  
+
+**Even evaluation systems cannot reliably flag the error.**
+
+---
+
+## Evaluation Design
+
+### Dual Judge Setup
+
+Using the same model to evaluate itself is circular.
+
+This setup uses:
+- OpenAI → baseline judge  
+- Ollama → independent judge  
+
+Disagreement between them is treated as a signal.
+
+---
+
+### Dataset
+
+24 incidents:
+-8 deploy-caused
+-8 red-herring (deploy present but irrelevant)
+-8 ambiguous
+
+Each includes:
+- incident description  
+- logs  
+- metrics  
+- recent changes  
+
+---
 
 ### Correctness Definition
 
-An agent response is "correct" if:
-- LLM judge score ≥ 0.7 (reasoning quality threshold), AND
-- Did not falsely attribute root cause to deployment on a non-deploy incident
+A response is considered correct if:
+- judge score ≥ 0.7  
+- AND no false deployment attribution on non-deploy incidents  
 
 ---
 
-## Files
+## Repo Structure
+-agent.py # prompt strategies
+-evaluator.py # scoring + deploy detection + judges
+-main.py # runs experiments + summary
+-inspect_case.py # deep-dive on individual failures
+-incidents.json # dataset
 
-| File | Purpose |
-|---|---|
-| `incidents.json` | 24 structured incidents from real postmortems |
-| `agent.py` | Three prompt strategies (naive, grounded, multi) |
-| `evaluator.py` | Dual-judge scoring, deploy blame detection, confidence extraction |
-| `main.py` | Experiment runner, recency bias analysis, summary table |
-| `build_dataset.py` | Dataset construction from public postmortem URLs |
 
 ---
 
-## How to Run
+## Running the Project
 
 ```bash
-# Install dependencies
 pip install openai python-dotenv
-npm install -g pptxgenjs
 
-# Set up .env
+# Set API key
 OPENAI_API_KEY=your_key_here
 
-# Install and start Ollama (free, local)
+# Optional: local judge
 ollama pull llama3.2
 ollama serve
 
-# Run the full eval
-python3 main.py
+python main.py
 ```
-
 ---
-
-## What This Means for AI SRE Tools
-
-1. **Prompt constraints matter more than reasoning structure** — grounded outperformed multi-hypothesis by a wide margin on bias reduction
-2. **Recency anchoring is the underlying mechanism** — not deploy-specific pattern matching
-3. **Confidence scores cannot be used as reliability signals** — high confidence and wrong answer co-occur too frequently
-4. **Judge disagreement is a detectable proxy for unreliable outputs** — could be operationalized as a "flag for human review" signal in production
-
+##Takeaways
+-LLM SRE agents anchor on recency, not causality
+-Prompting reduces bias, but does not remove it
+-Confidence is not a reliable signal
+-Judge disagreement can help identify unreliable outputs
 ---
+##Why This Matters
 
-## Source Postmortems
+In real incidents, this behavior can:
 
-Dataset built from public postmortems including: crates.io, Cloudflare, PagerDuty, GoCardless, Heroku, Stack Overflow, Facebook, Datadog, Sentry, and Allegro.
+1. mislead engineers toward the wrong root cause
+2. increase time to resolution
+3. reduce trust in AI-assisted debugging
+--- 
+##Sources
+
+Incidents adapted from public postmortems including:
+Cloudflare, Datadog, PagerDuty, GoCardless, Heroku, Facebook, Stack Overflow, and others.
