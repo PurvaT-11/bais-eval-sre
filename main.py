@@ -1,5 +1,6 @@
 import json
 from agent import run_agent
+import inspect
 from evaluator import (
     detect_deploy_blame,
     extract_confidence,
@@ -46,6 +47,7 @@ def run_experiment(version):
         )
 
         results.append({
+            
             "is_deploy": inc["is_deploy_cause"],
             "blamed": blamed,
             "correct": correct,
@@ -54,9 +56,50 @@ def run_experiment(version):
             "score_ollama": score_ollama,
             "disagree": disagree,
             "id": inc["id"],
+            "distractor_type": inc.get("distractor_type", "unknown"),
         })
 
     return results
+
+
+def analyze_recency_bias(results):
+    from collections import defaultdict
+
+    grouped = defaultdict(list)
+
+    for r in results:
+        if not r["is_deploy"]:  # only non-deploy incidents
+            grouped[r.get("distractor_type", "unknown")].append(r)
+
+    print("\n" + "=" * 60)
+    print("RECENCY BIAS ANALYSIS")
+    print("=" * 60)
+
+    for dtype, items in grouped.items():
+        total = len(items)
+        blamed = [r for r in items if r["blamed"]]
+
+        rate = len(blamed) / total if total else 0
+
+        print(f"{dtype:<20} | Count: {total:<3} | Blame Rate: {rate:.2f}")
+
+
+def analyze_anchor_mismatch(results):
+    mismatches = []
+
+    for r in results:
+        if not r["is_deploy"]:
+            if r["blamed"] and r.get("distractor_type", "unknown") != "deployment":
+                mismatches.append(r)
+
+    print("\n" + "=" * 60)
+    print("ANCHOR MISMATCH CASES")
+    print("=" * 60)
+
+    for r in mismatches[:5]:
+        print(f"- Distractor: {r.get('distractor_type', 'unknown')}, but blamed deploy")
+
+    print(f"\nTotal mismatches: {len(mismatches)}")
 
 
 def summarize(label, results):
@@ -105,6 +148,9 @@ print_summary_table([s_naive, s_grounded, s_multi])
 
 print(f"\nBias Reduction (Naive → Grounded): {s_naive['FAR'] - s_grounded['FAR']:.2f}")
 
+analyze_recency_bias(naive)
+analyze_anchor_mismatch(naive)
+
 print("\nHIGH CONFIDENCE WRONG CASES:\n")
 
 for inc in incidents:
@@ -124,3 +170,8 @@ for inc in incidents:
             else "N/A (Ollama parse fail)",
         )
         print("Blamed Deploy:", res["blamed"])
+
+all_results = naive  
+
+with open("results.json", "w") as f:
+    json.dump(all_results, f, indent=2)
