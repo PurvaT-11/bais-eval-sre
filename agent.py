@@ -68,10 +68,52 @@ Confidence (0.0-1.0):
 
 Suggested Action:
 - <bullet>
+
+
+"""
+
+MULTI_PROMPT = """You are an expert SRE.
+
+Incident:
+{incident}
+
+Logs:
+{logs}
+
+Metrics:
+{metrics}
+
+Deployments:
+{deployments}
+
+Step 1: List the top 2 possible root causes.
+Step 2: For each, explain supporting evidence and why it might be wrong.
+Step 3: Choose the most likely root cause.
+
+Return format:
+
+Hypothesis 1:
+<text>
+
+Hypothesis 2:
+<text>
+
+Final Root Cause:
+<text>
+
+Confidence (0.0-1.0):
+<number>
 """
 
 def run_agent(incident, prompt_version="naive"):
-    prompt_template = NAIVE_PROMPT if prompt_version == "naive" else GROUNDED_PROMPT
+    if prompt_version == "naive":
+        prompt_template = NAIVE_PROMPT
+    elif prompt_version == "grounded":
+        prompt_template = GROUNDED_PROMPT
+    elif prompt_version == "multi":
+        prompt_template = MULTI_PROMPT
+    else:
+        raise ValueError("Unknown prompt version")
 
     prompt = prompt_template.format(
         incident=incident["incident"],
