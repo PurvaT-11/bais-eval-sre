@@ -1,0 +1,8 @@
+Naive FAR: 0.62
+Grounded FAR: 0.19
+Multi FAR: 0.62
+
+Bias Reduction: 0.44
+
+Key finding:
+Strong deployment bias + high confidence wrong answers

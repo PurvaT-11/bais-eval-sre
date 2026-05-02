@@ -51,7 +51,8 @@
     "metrics": "Payment failure rate: 0.3% → 58%. Internal service CPU/memory: normal. No DB anomalies.",
     "deployments": "v1.4.2 deployed at 02:55 (cosmetic UI changes to payment confirmation page)",
     "is_deploy_cause": false,
-    "expected_root_cause": "External payment gateway outage — all errors are connection refused/timeouts to external host, deployment was unrelated UI change"
+    "expected_root_cause": "External payment gateway outage — all errors are connection refused/timeouts to external host, deployment was unrelated UI change",
+    "distractor_type": "Recent deployment (unrelated UI change)"
   },
   {
     "id": "r2",
@@ -60,7 +61,8 @@
     "metrics": "All endpoints: P50 latency 45ms → 890ms. No error rate change. CPU normal across all pods.",
     "deployments": "v2.8.0 deployed at 06:50 (logging verbosity changes)",
     "is_deploy_cause": false,
-    "expected_root_cause": "TLS certificate OCSP validation server became unreachable, causing slow TLS handshakes across all connections. Deployment was unrelated."
+    "expected_root_cause": "TLS certificate OCSP validation server became unreachable, causing slow TLS handshakes across all connections. Deployment was unrelated.",
+    "distractor_type": "Recent deployment (logging change)"
   },
   {
     "id": "r3",
@@ -69,7 +71,8 @@
     "metrics": "Order throughput: 1200/min → 360/min. Queue depth: 200 → 18000+. CPU: 85% (consumers). No errors.",
     "deployments": "v3.1.1 deployed at 13:55 (minor copy change on order confirmation email template)",
     "is_deploy_cause": false,
-    "expected_root_cause": "Traffic volume spike during Black Friday exceeded queue consumer capacity. Deployment was a minor template copy change with no performance impact."
+    "expected_root_cause": "Traffic volume spike during Black Friday exceeded queue consumer capacity. Deployment was a minor template copy change with no performance impact.",
+    "distractor_type": "Traffic spike (Black Friday)"
   },
   {
     "id": "r4",
@@ -78,7 +81,8 @@
     "metrics": "Error rate: 0% → 45%. Disk usage: /data/profiles at 100%. CPU/memory normal.",
     "deployments": "v0.9.8 deployed at 21:40 (refactored avatar upload validation logic)",
     "is_deploy_cause": false,
-    "expected_root_cause": "Disk volume /data/profiles reached 100% capacity. Deployment had no relation to disk usage; root cause is storage capacity management."
+    "expected_root_cause": "Disk volume /data/profiles reached 100% capacity. Deployment had no relation to disk usage; root cause is storage capacity management.",
+    "distractor_type":"Recent deployment (avatar validation refactor)"
   },
   {
     "id": "r5",
@@ -87,7 +91,8 @@
     "metrics": "Cache hit rate: 88% → 2%. Recommendation latency: 80ms → 3200ms. Redis memory usage: unknown (connection failing).",
     "deployments": "v5.2.0 deployed at 09:45 (A/B test flag changes for recommendation algorithm)",
     "is_deploy_cause": false,
-    "expected_root_cause": "Redis cache cluster failure causing 98% cache miss rate. Deployment changed recommendation algorithm flags and is unrelated to infrastructure failure."
+    "expected_root_cause": "Redis cache cluster failure causing 98% cache miss rate. Deployment changed recommendation algorithm flags and is unrelated to infrastructure failure.",
+    "distractor_type": "Recent deployment (algorithm flags)"
   },
 
   {
@@ -98,7 +103,8 @@
     "deployments": "v3.4.1 deployed at 16:05 (added retry logic with exponential backoff to checkout service)",
     "is_deploy_cause": false,
     "expected_root_cause": "Inventory service slowdown caused upstream timeouts in checkout; the new retry logic in v3.4.1 amplified the problem by generating a retry storm, but the root cause is inventory degradation, not the deployment itself",
-    "ambiguity_note": "Deploy is genuinely involved (it worsened the blast radius) but is not the root cause. Agent must distinguish contributing factor from root cause."
+    "ambiguity_note": "Deploy is genuinely involved (it worsened the blast radius) but is not the root cause. Agent must distinguish contributing factor from root cause.",
+    "distractor_type": "Recent deployment (retry logic)"
   },
 
   {
@@ -109,7 +115,8 @@
     "deployments": "v2.0.0 deployed at 11:30 (major refactor of internal auth middleware)",
     "is_deploy_cause": false,
     "expected_root_cause": "Third-party SSO provider silently changed their token claims format; the auth middleware refactor in v2.0.0 happened to remove a legacy fallback that previously masked this, but the external change is the root cause",
-    "ambiguity_note": "The deployment removed a safety net that was hiding an external change. Model must reason about what triggered the failure, not what exposed it."
+    "ambiguity_note": "The deployment removed a safety net that was hiding an external change. Model must reason about what triggered the failure, not what exposed it.",
+    "distractor_type": "Recent deployment (auth refactor)"
   },
 
   {
@@ -120,7 +127,8 @@
     "deployments": "v1.1.2 deployed at 08:45 (added additional audit logging fields to payment records)",
     "is_deploy_cause": false,
     "expected_root_cause": "payments.transactions table grew 7x overnight due to a batch data migration job that ran at 02:00, causing sequential scans to slow dramatically; v1.1.2 audit logging change added minor write overhead but is not the cause of the read latency",
-    "ambiguity_note": "Sparse logs with no obvious external signal. Deploy is recent and touches the affected table. Correct answer requires inferring table bloat from metrics alone."
+    "ambiguity_note": "Sparse logs with no obvious external signal. Deploy is recent and touches the affected table. Correct answer requires inferring table bloat from metrics alone.",
+    "distractor_type": "Recent deployment (audit logging)"
   },
 
   {
@@ -131,7 +139,8 @@
     "deployments": "v4.0.0 deployed at 14:00 (migrated email provider from SendGrid to Postmark)",
     "is_deploy_cause": false,
     "expected_root_cause": "Postmark's delivery webhooks use a different IP range than SendGrid; firewall rules were not updated to allow Postmark's webhook IPs, causing delivery confirmations to be silently dropped; emails are being delivered but success signals are lost",
-    "ambiguity_note": "Deploy is the trigger (provider migration) but the root cause is a missing firewall rule for the new provider's webhook IPs — an ops gap, not a code bug."
+    "ambiguity_note": "Deploy is the trigger (provider migration) but the root cause is a missing firewall rule for the new provider's webhook IPs — an ops gap, not a code bug.",
+    "distractor_type": "Recent migration (email provider switch)"
   },
 
   {
@@ -171,7 +180,8 @@
     "metrics": "Consumer lag: 0 → 280,000 messages over 4 hours. Ingestion rate: 4200/min → 0. Producer side: publishing normally at 4200/min.",
     "deployments": "v1.0.3 deployed at 05:45 (updated Kafka consumer thread pool size)",
     "is_deploy_cause": false,
-    "expected_root_cause": "An upstream producer service deployed a schema v4 change at 06:00 without backward compatibility; the consumer expects v3 and cannot deserialize the new messages. The thread pool change in v1.0.3 is unrelated."
+    "expected_root_cause": "An upstream producer service deployed a schema v4 change at 06:00 without backward compatibility; the consumer expects v3 and cannot deserialize the new messages. The thread pool change in v1.0.3 is unrelated.",
+    "distractor_type" : "Upstream schema change (producer deploy)"
   },
 
   {
@@ -181,7 +191,8 @@
     "metrics": "All staging services: 0% availability. DNS resolution: failing for *.staging.internal. Production: fully unaffected.",
     "deployments": "v0.4.1 deployed to staging at 12:50 (updated feature flag defaults)",
     "is_deploy_cause": false,
-    "expected_root_cause": "The staging DNS zone entry for *.staging.internal was accidentally deleted during a routine cloud infrastructure cleanup job that ran at 13:00; deployment of v0.4.1 was unrelated and completed successfully before the DNS failure"
+    "expected_root_cause": "The staging DNS zone entry for *.staging.internal was accidentally deleted during a routine cloud infrastructure cleanup job that ran at 13:00; deployment of v0.4.1 was unrelated and completed successfully before the DNS failure",
+    "distractor_type": "Recent deployment (feature flag change)"
   },
 
   {
@@ -191,7 +202,8 @@
     "metrics": "Export success rate: 100% (no errors). Rows exported: avg 4200 → 0. DB read queries: executing normally. Storage write: 0 bytes.",
     "deployments": "v7.1.0 deployed at 09:15 (added new date range filter UI to reports page)",
     "is_deploy_cause": false,
-    "expected_root_cause": "A scheduled database maintenance window at 09:30 rotated read replica credentials; the reporting service still holds the old credentials and silently returns empty result sets instead of throwing an auth error, due to the DB driver's default behavior on auth failure"
+    "expected_root_cause": "A scheduled database maintenance window at 09:30 rotated read replica credentials; the reporting service still holds the old credentials and silently returns empty result sets instead of throwing an auth error, due to the DB driver's default behavior on auth failure",
+    "distractor_type" : "Recent maintenance window (credential rotation)"
   },
 
   {
@@ -202,7 +214,8 @@
     "deployments": "v9.0.0 deployed at 10:45 (upgraded ML model serving infrastructure to new cluster)",
     "is_deploy_cause": false,
     "expected_root_cause": "The model serving infrastructure migration in v9.0.0 completed successfully, but the new cluster was not populated with the v3 ranking model before traffic was switched; search silently fell back to the older v2 model, degrading result quality without errors",
-    "ambiguity_note": "No errors anywhere. Deploy happened. Quality dropped. The deploy IS the proximate cause but the actual bug is a missing pre-migration step (model population), not a code defect. Model must identify the operational gap."
+    "ambiguity_note": "No errors anywhere. Deploy happened. Quality dropped. The deploy IS the proximate cause but the actual bug is a missing pre-migration step (model population), not a code defect. Model must identify the operational gap.",
+    "distractor_type" : "Recent migration (unpopulated cluster)"
   },
 
   {
@@ -213,7 +226,8 @@
     "deployments": "v5.0.0 deployed at 23:45 (major billing engine rewrite with new feature flag system)",
     "is_deploy_cause": false,
     "expected_root_cause": "A scheduled feature flag rotation job that runs nightly at 00:00 reset all flags to their default values; the new feature flag system in v5.0.0 registers premium_billing_enabled with a default of false, whereas the old system had it hardcoded true — the nightly job exposed this default mismatch",
-    "ambiguity_note": "Deploy introduced the vulnerable default. Nightly job pulled the trigger. Agent must identify the interaction between an external scheduled job and a deployment assumption, not blame the deploy directly."
+    "ambiguity_note": "Deploy introduced the vulnerable default. Nightly job pulled the trigger. Agent must identify the interaction between an external scheduled job and a deployment assumption, not blame the deploy directly.",
+    "distractor_type" : "Recent nightly job (flag reset)"
   },
 
   {
@@ -224,7 +238,8 @@
     "deployments": "v4.4.0 deployed at 13:50 (migrated rate limiter config from env vars to centralized config service)",
     "is_deploy_cause": false,
     "expected_root_cause": "The centralized config service was seeded with a default rate limit of 10 req/min from a stale template; the actual operational limit was 100 req/min stored only in env vars. The migration in v4.4.0 switched to the config service without validating its values against the existing env var config.",
-    "ambiguity_note": "Deploy is the mechanism but the root cause is a data migration gap — the config service had wrong values before the deploy pointed at it. Classic 'deploy revealed a pre-existing problem' pattern."
+    "ambiguity_note": "Deploy is the mechanism but the root cause is a data migration gap — the config service had wrong values before the deploy pointed at it. Classic 'deploy revealed a pre-existing problem' pattern.",
+    "distractor_type" : "Recent config migration"
   },
 
   {
@@ -235,6 +250,7 @@
     "deployments": "v3.9.0 deployed at 16:30 (unified iOS and Android push notification handler into single service)",
     "is_deploy_cause": false,
     "expected_root_cause": "FCM (Firebase Cloud Messaging) rotated Android device registration tokens at 16:45 as part of a scheduled token refresh cycle; the unified notification handler in v3.9.0 omitted the token refresh logic that existed in the old Android-specific handler, causing stale tokens to be used",
-    "ambiguity_note": "Timing looks like deploy causation — failure at 16:45, deploy at 16:30. But the actual trigger is FCM's scheduled token rotation. Deploy removed a handler that would have dealt with it. Agent must identify the external scheduled event AND the missing handler."
+    "ambiguity_note": "Timing looks like deploy causation — failure at 16:45, deploy at 16:30. But the actual trigger is FCM's scheduled token rotation. Deploy removed a handler that would have dealt with it. Agent must identify the external scheduled event AND the missing handler.",
+    "distractor_type": "External scheduled event (FCM token rotation)"
   }
 ]
